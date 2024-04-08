@@ -85,10 +85,26 @@ export const updateProduct = async (req, res) => {
 
 // Delete
 export const deleteProduct = async (req, res) => {
-    res.status(200).json({
-        message: 'Delete product'
-    })
+    try {
+
+        const id = req.params.id
+        if(!mongoose.isValidObjectId(id)) {
+            res.status(400)
+            throw new Error('You need to provide a valid ObjectId')
+        }
+        const product = await Product.findByIdAndDelete(id)
+
+        if(!product) {
+            res.status(404)
+            throw new Error('Product not found')
+        }
+
+        res.status(200).json( product._id )
+        
+    } catch (err) {
+        res.json({ 
+            message: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : null
+        })
+    }
 }
-
-
-//1:50
