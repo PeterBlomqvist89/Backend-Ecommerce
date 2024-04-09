@@ -36,12 +36,12 @@ export const createProduct = async (req, res) => {
     }
 }
 
-// GET
+// GET all
 export const getProduct = async (req, res) => {
 
     try {
         const product = await Product.find()
-        res.status(201).json(product)
+        res.status(200).json(product)
         
     } catch (err) {
         res.json({ 
@@ -49,9 +49,33 @@ export const getProduct = async (req, res) => {
             stack: process.env.NODE_ENV === 'development' ? err.stack : null
         })
     }
-
-
 }
+
+// GET by id
+export const getProductById = async (req, res) => {
+    try {
+        const id = req.params.id
+        if(!mongoose.isValidObjectId(id)) {
+            res.status(400)
+            throw new Error('You need to provide a valid ObjectId')
+        }
+
+        const product = await Product.findById(id);
+
+        if(!product) {
+            res.status(404)
+            throw new Error('Product id not found')
+        }
+
+        res.status(200).json(product);
+
+    } catch (err) {
+        res.json({ 
+            message: err.message,
+            stack: process.env.NODE_ENV === 'development' ? err.stack : null
+        })
+    }
+};
 
 // PUT
 export const updateProduct = async (req, res) => {

@@ -3,14 +3,18 @@ const router = express.Router()
 import {
     createProduct,
     getProduct,
+    getProductById,
     updateProduct,
-    deleteProduct } from '../controllers/productController.js'
+    deleteProduct, } from '../controllers/productController.js'
 
 // Create
 router.post('/', createProduct)
 
-// Read 
+// Read all
 router.get('/', getProduct)
+
+// Read id
+router.get('/:id', getProductById);
 
 // Update
 router.put('/:id', updateProduct)
