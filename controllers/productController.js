@@ -1,134 +1,30 @@
-import mongoose from 'mongoose'
-import Product from '../models/productModel.js'
+import express from 'express'
+const router = express.Router()
+import {
+    createProduct,
+    getProduct,
+    getProductById,
+    updateProduct,
+    deleteProduct, } from '../models/productModel.js'
 
+// Create
+router.post('/', createProduct)
 
+// Read all
+router.get('/', getProduct)
 
-// POST
-export const createProduct = async (req, res) => {
-    try {
-        
-        const { name, price, description, category, images } = req.body
+// Read id
+router.get('/:id', getProductById);
 
-        if(!name || !price || !description || !category || !images) {
-            res.status(400)
-            throw new Error('You need to enter product')
-        }
-
-        const product = await Product.create({ name,
-            price,
-            description,
-            category,
-            images }) 
-
-        if (!product) {
-            return res.status(500).json({
-                message: 'Something went wrong when creating product'
-            });
-        }
-
-        res.status(201).json(product);
-        
-    } catch (err) {
-        res.json({ 
-            message: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : null
-        })
-    }
-}
-
-// GET all
-export const getProduct = async (req, res) => {
-
-    try {
-        const product = await Product.find()
-        res.status(200).json(product)
-        
-    } catch (err) {
-        res.json({ 
-            message: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : null
-        })
-    }
-}
-
-// GET by id
-export const getProductById = async (req, res) => {
-    try {
-        const id = req.params.id
-        if(!mongoose.isValidObjectId(id)) {
-            res.status(400)
-            throw new Error('You need to provide a valid ObjectId')
-        }
-
-        const product = await Product.findById(id);
-
-        if(!product) {
-            res.status(404)
-            throw new Error('Product id not found')
-        }
-
-        res.status(200).json(product);
-
-    } catch (err) {
-        res.json({ 
-            message: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : null
-        })
-    }
-};
-
-// PUT
-export const updateProduct = async (req, res) => {
-
-    try {
-
-        const id = req.params.id
-        if(!mongoose.isValidObjectId(id)) {
-            res.status(400)
-            throw new Error('You need to provide a valid ObjectId')
-        }
-
-        const product = await Product.findByIdAndUpdate(id, req.body, { new: true })
-        
-        if(!product) {
-            res.status(404)
-            throw new Error('Product not found')
-        }
-
-        res.status(200).json(product)
-
-
-    } catch (err) {
-        res.json({ 
-            message: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : null
-        })
-    }
-
-}
+// Update
+router.put('/:id', updateProduct)
 
 // Delete
-export const deleteProduct = async (req, res) => {
-    try {
+router.delete('/:id', deleteProduct)
 
-        const id = req.params.id
-        if(!mongoose.isValidObjectId(id)) {
-            res.status(400)
-            throw new Error('You need to provide a valid ObjectId')
-        }
-        const product = await Product.findByIdAndDelete(id)
 
-        if(!product) {
-            res.status(404)
-            throw new Error('Product not found')
-        }
 
-        res.status(200).json( product._id )
-        
-    } catch (err) {
-        res.json({ 
-            message: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : null
-        })
-    }
-}
+
+
+
+export default router
