@@ -1,5 +1,7 @@
 import User from '../schemas/userSchema.js'
 import asyncHandler from 'express-async-handler'
+import generateToken from '../utils/generateToken.js';
+import bcrypt from 'bcryptjs'
 
 const registerUser = asyncHandler(async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
@@ -23,22 +25,45 @@ const registerUser = asyncHandler(async (req, res) => {
         passwordHash: password
     })
 
+    const token = generateToken(user)
+
     res.status(201).json({
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email
-        // Token
+        email: user.email,
+        token
     })
 
 })
 
-
 const loginUser = asyncHandler(async (req, res) => {
-    res.json({ message: 'login user'})
+    const { email, password } = req.body
 
-    
+    if(!email || !password) {
+        res.status(400)
+        throw new Error('You need to enter all the fields')
+    }
+
+    const user = await User.findOne({ email })
+
+    if(!user) {
+        res.status(401)
+        throw new Error('Incorrect credentials')
+    }
+
+    if(!user.matchPassword(password)) {
+        res.status(401)
+        throw new Error('Incorrect credentials')
+    }
+
+    res.status(200).json({ 
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        token: generateToken(user) 
+    })
+
 })
-
 
 export {
     registerUser,
