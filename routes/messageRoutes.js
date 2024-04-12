@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import {
-    createMessage } from '../models/messageModel.js'
+    createMessage } from '../controller/messageController.js'
 
 // Create
 router.post('/', createMessage)

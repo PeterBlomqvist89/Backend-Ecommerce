@@ -4,7 +4,7 @@ const router = express.Router()
 import {
     registerUser,
     loginUser
-} from '../models/userModel.js'
+} from '../controller/userController.js'
 
 
 // Routes

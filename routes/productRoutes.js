@@ -5,7 +5,7 @@ import {
     getProduct,
     getProductById,
     updateProduct,
-    deleteProduct, } from '../models/productModel.js'
+    deleteProduct, } from '../controller/productController.js'
 
 // Create
 router.post('/', createProduct)

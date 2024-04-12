@@ -1,8 +1,8 @@
 import express from "express";
 import dbConnect from "./server.js";
-import productRoute from './controllers/productController.js'
-import messageRoute from './controllers/messageController.js'
-import userController from './controllers/userController.js'
+import productRoute from './routes/productRoutes.js'
+import messageRoute from './routes/messageRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 dbConnect()
@@ -21,7 +21,8 @@ app.use(express.urlencoded({ extended: false }))
 // routes
 app.use('/api/product', productRoute)
 app.use('/api/message', messageRoute)
-app.use('/api/users', userController)
+app.use('/api/users', userRoutes)
+// app.use('/api/orders', orderRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
